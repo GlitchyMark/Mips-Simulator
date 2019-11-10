@@ -2,6 +2,7 @@
 #include "MIPS.h"
 #include <list>
 #include <string>
+#include <vector>
 namespace MipsSimulator {
 
 	using namespace System;
@@ -10,10 +11,11 @@ namespace MipsSimulator {
 	using namespace System::Windows::Forms;
 	using namespace System::Data;
 	using namespace System::Drawing;
-	static MIPS mips_run;
+	static MIPS *mips_run;
 	/// <summary>
 	/// Summary for MyForm
 	/// </summary>
+
 	public ref class MipsGui : public System::Windows::Forms::Form
 	{
 	public:
@@ -75,11 +77,13 @@ namespace MipsSimulator {
 			// 
 			this->instructionBox->Anchor = static_cast<System::Windows::Forms::AnchorStyles>(((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom)
 				| System::Windows::Forms::AnchorStyles::Left));
-			this->instructionBox->Location = System::Drawing::Point(12, 32);
+			this->instructionBox->Location = System::Drawing::Point(16, 40);
+			this->instructionBox->Margin = System::Windows::Forms::Padding(4, 4, 4, 4);
 			this->instructionBox->Multiline = true;
 			this->instructionBox->Name = L"instructionBox";
-			this->instructionBox->Size = System::Drawing::Size(415, 560);
+			this->instructionBox->Size = System::Drawing::Size(552, 699);
 			this->instructionBox->TabIndex = 0;
+			this->instructionBox->Text = L"addi $s1, $s1, 5";
 			this->instructionBox->TextChanged += gcnew System::EventHandler(this, &MipsGui::textBox1_TextChanged);
 			// 
 			// label1
@@ -87,18 +91,20 @@ namespace MipsSimulator {
 			this->label1->Anchor = static_cast<System::Windows::Forms::AnchorStyles>(((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom)
 				| System::Windows::Forms::AnchorStyles::Left));
 			this->label1->AutoSize = true;
-			this->label1->Location = System::Drawing::Point(8, 9);
+			this->label1->Location = System::Drawing::Point(11, 11);
+			this->label1->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
 			this->label1->Name = L"label1";
-			this->label1->Size = System::Drawing::Size(92, 20);
+			this->label1->Size = System::Drawing::Size(122, 25);
 			this->label1->TabIndex = 1;
 			this->label1->Text = L"Instructions";
 			// 
 			// button1
 			// 
 			this->button1->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Left));
-			this->button1->Location = System::Drawing::Point(12, 598);
+			this->button1->Location = System::Drawing::Point(16, 748);
+			this->button1->Margin = System::Windows::Forms::Padding(4, 4, 4, 4);
 			this->button1->Name = L"button1";
-			this->button1->Size = System::Drawing::Size(415, 54);
+			this->button1->Size = System::Drawing::Size(553, 68);
 			this->button1->TabIndex = 2;
 			this->button1->Text = L"Execute";
 			this->button1->UseVisualStyleBackColor = true;
@@ -109,10 +115,11 @@ namespace MipsSimulator {
 			this->cycleBox->Anchor = static_cast<System::Windows::Forms::AnchorStyles>(((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom)
 				| System::Windows::Forms::AnchorStyles::Left));
 			this->cycleBox->FormattingEnabled = true;
-			this->cycleBox->ItemHeight = 20;
-			this->cycleBox->Location = System::Drawing::Point(433, 32);
+			this->cycleBox->ItemHeight = 25;
+			this->cycleBox->Location = System::Drawing::Point(577, 40);
+			this->cycleBox->Margin = System::Windows::Forms::Padding(4, 4, 4, 4);
 			this->cycleBox->Name = L"cycleBox";
-			this->cycleBox->Size = System::Drawing::Size(119, 624);
+			this->cycleBox->Size = System::Drawing::Size(157, 779);
 			this->cycleBox->TabIndex = 3;
 			this->cycleBox->SelectedIndexChanged += gcnew System::EventHandler(this, &MipsGui::cycleBox_SelectedIndexChanged);
 			// 
@@ -122,19 +129,21 @@ namespace MipsSimulator {
 				| System::Windows::Forms::AnchorStyles::Left)
 				| System::Windows::Forms::AnchorStyles::Right));
 			this->registerBox->FormattingEnabled = true;
-			this->registerBox->ItemHeight = 20;
-			this->registerBox->Location = System::Drawing::Point(558, 32);
+			this->registerBox->ItemHeight = 25;
+			this->registerBox->Location = System::Drawing::Point(744, 40);
+			this->registerBox->Margin = System::Windows::Forms::Padding(4, 4, 4, 4);
 			this->registerBox->Name = L"registerBox";
-			this->registerBox->Size = System::Drawing::Size(292, 624);
+			this->registerBox->Size = System::Drawing::Size(388, 779);
 			this->registerBox->TabIndex = 4;
 			this->registerBox->SelectedIndexChanged += gcnew System::EventHandler(this, &MipsGui::listBox2_SelectedIndexChanged);
 			// 
 			// label2
 			// 
 			this->label2->AutoSize = true;
-			this->label2->Location = System::Drawing::Point(429, 9);
+			this->label2->Location = System::Drawing::Point(572, 11);
+			this->label2->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
 			this->label2->Name = L"label2";
-			this->label2->Size = System::Drawing::Size(47, 20);
+			this->label2->Size = System::Drawing::Size(66, 25);
 			this->label2->TabIndex = 5;
 			this->label2->Text = L"Cycle";
 			// 
@@ -143,17 +152,18 @@ namespace MipsSimulator {
 			this->label3->Anchor = static_cast<System::Windows::Forms::AnchorStyles>(((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Left)
 				| System::Windows::Forms::AnchorStyles::Right));
 			this->label3->AutoSize = true;
-			this->label3->Location = System::Drawing::Point(558, 9);
+			this->label3->Location = System::Drawing::Point(744, 11);
+			this->label3->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
 			this->label3->Name = L"label3";
-			this->label3->Size = System::Drawing::Size(122, 20);
+			this->label3->Size = System::Drawing::Size(164, 25);
 			this->label3->TabIndex = 6;
 			this->label3->Text = L"Register Values";
 			// 
 			// MipsGui
 			// 
-			this->AutoScaleDimensions = System::Drawing::SizeF(9, 20);
+			this->AutoScaleDimensions = System::Drawing::SizeF(12, 25);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(862, 664);
+			this->ClientSize = System::Drawing::Size(1149, 830);
 			this->Controls->Add(this->label3);
 			this->Controls->Add(this->label2);
 			this->Controls->Add(this->registerBox);
@@ -161,6 +171,7 @@ namespace MipsSimulator {
 			this->Controls->Add(this->button1);
 			this->Controls->Add(this->label1);
 			this->Controls->Add(this->instructionBox);
+			this->Margin = System::Windows::Forms::Padding(4, 4, 4, 4);
 			this->Name = L"MipsGui";
 			this->Text = L"Mips Simulator";
 			this->ResumeLayout(false);
@@ -175,7 +186,8 @@ namespace MipsSimulator {
 private: 
 	void updateCycleList()
 	{
-		for (int i = 0; mips_run.getRegisterHistory().size() > i; i++)
+		cycleBox->Items->Clear();
+		for (int i = 0; mips_run->getRegisterHistory().size() > i; i++)
 		{
 			cycleBox->Items->Add(i);
 		}
@@ -188,32 +200,36 @@ private:
 		os = chars;
 		Marshal::FreeHGlobal(IntPtr((void*)chars));
 	}
-
 	void populateInstructions()
 	{
 		array<Char>^ sep = gcnew array<Char>{ '\n' };
 		array<String^>^ insts = instructionBox->Text->Split(sep, StringSplitOptions::None);
 		array<Char>^ aurgsep = gcnew array<Char>{ ',' };
+		std::vector<std::string> instructions = std::vector<std::string>();
 		for (int i = 0; insts->Length > i; i++)
 		{
 			String^ currLine = insts[i]->ToString();
-			currLine = currLine->Replace("\s", "");
+			currLine = currLine->Substring(0, currLine->IndexOf(" ")) + "," + currLine->Substring(currLine->IndexOf(" ") + 1);
+			currLine = currLine->Replace(" ", "");
 
 			std::string str = "";
 			MarshalString(currLine, str);
-
-			mips_run.insertInstruction(str);
+			instructions.push_back(str);
+			//instructions.push_back(str);
 
 			//cycleBox->Items->Add(insts[i]->ToString());
 		}
+		mips_run->insertInstructions(instructions);
 	}
 	System::Void button1_Click(System::Object^ sender, System::EventArgs^ e)
 	{
+		//cycleBox->Items->Add(1);
+		if (mips_run != NULL)
+			delete mips_run;
+		mips_run = new MIPS();
+		
 		populateInstructions();
-		return;
-		cycleBox->Items->Add(1);
-		mips_run = MIPS();
-		mips_run.run();
+		mips_run->run();
 		updateCycleList();
 	
 }
@@ -223,7 +239,7 @@ private: System::Void cycleBox_SelectedIndexChanged(System::Object^ sender, Syst
 	registerBox->Items->Clear();
 	for (int i = 0; 8 > i; i++)
 	{
-		int32_t regVal = mips_run.getRegisterHistory().at(cycleBox->SelectedIndex)[i];
+		int32_t regVal = mips_run->getRegisterHistory().at(cycleBox->SelectedIndex)[i];
 		registerBox->Items->Add("$s" + i + ": " + regVal) ;
 	}
 }
