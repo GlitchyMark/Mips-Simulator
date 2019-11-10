@@ -136,6 +136,7 @@
     <ClCompile Include="MipsGui.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="MIPS.h" />
     <ClInclude Include="MipsGui.h">
       <FileType>CppForm</FileType>
     </ClInclude>

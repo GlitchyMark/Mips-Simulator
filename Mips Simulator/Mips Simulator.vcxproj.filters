@@ -18,15 +18,18 @@
     <ClCompile Include="Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="MIPS.cpp">
+    <ClCompile Include="MipsGui.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="MipsGui.cpp">
+    <ClCompile Include="MIPS.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MipsGui.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MIPS.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
