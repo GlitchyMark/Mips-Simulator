@@ -330,23 +330,23 @@ void MIPS::ALU(int busA, int busB, uint8_t operation, int data, int alt)//ALUOut
 		setWire(data, getWire(busA) >> getWire(busB));
 		setWire(alt, getWire(data) == 0);
 		break;
-	case COMPARE://Shift right arithmetic
+	case COMPARE://
 		setWire(data, getWire(busA) > getWire(busB));
 		setWire(alt, (getWire(busA) > getWire(busB)) & 0x1);
 		break;
-	case COMPAREZ://Shift right arithmetic
+	case COMPAREZ://
 		setWire(data, getWire(busA) > 0);
 		setWire(alt, (getWire(busA) > 0) & 0x1);
 		break;
-	case COMPARE256://Shift right arithmetic
+	case COMPARE256://
 		setWire(data, getWire(busA) > 0x0100);
 		setWire(alt, (getWire(busA) > 0x01000) & 0x1);
 		break;
-	case BITWISEXOR://Bitwise OR
+	case BITWISEXOR://Bitwise XOR
 		setWire(data, getWire(busA) ^ getWire(busB));
 		setWire(alt, getWire(data) == 0);
 		break;
-	case DONOTHING://Shift right arithmetic
+	case DONOTHING://returns 0
 		setWire(data, 0);
 		setWire(alt, getWire(data) == 0);
 		break;
@@ -507,7 +507,7 @@ uint16_t MIPS::getrVal(std::string str, std::string instruction, int currLine)
 			if (strcmp(str.c_str(), labelList.at(i).label.c_str()) == 0)
 			{
 				//std::cout << "Line at " << labelList.at(i).line - currLine << "\n";
-				if(instruction == "b")
+				if(instruction == "j")
 					return labelList.at(i).line;
 				else
 					return labelList.at(i).line - currLine - 1;
@@ -623,15 +623,15 @@ int MIPS::insertInstructions(std::vector<std::string> instructions)
 			instruction |= (getrVal(result[1], insttype, i) << 5) & 0x00E0;//rt
 			instruction |= (getrVal(result[3], insttype, i)) & 0x001F;//Immediate
 		}
-		else if (insttype == "b") {
-			instruction |= 0x0D << 11;//Control
-			instruction |= (getrVal(result[1], insttype, i)) & 0x07FF;//branch
-		}
 		else if (insttype == "slt") {
 			instruction |= 0x0C << 11;//Control
 			instruction |= (getrVal(result[2], insttype, i) << 8) & 0x0700;//rs
 			instruction |= (getrVal(result[1], insttype, i) << 5) & 0x00E0;//rt
 			instruction |= (getrVal(result[3], insttype, i) << 2) & 0x001C;//rd
+		}
+		else if (insttype == "j") {
+			instruction |= 0x0D << 11;//Control
+			instruction |= (getrVal(result[1], insttype, i)) & 0x07FF;//branch
 		}
 		else if (insttype == "beq") {
 			instruction |= 0x0E << 11;//Control
@@ -668,7 +668,8 @@ int MIPS::insertInstructions(std::vector<std::string> instructions)
 			instruction |= 0xFFFF;
 			std::cout << "[Error][Assembler] unknown instruction " << insttype << '\n';
 		}
-		instructionmemory[i] = instruction;
+		instructionmemory[i] = instruction & 0xFFFF;
+		printf("Instruction %d: 0x%04X\n", i, instruction & 0xFFFF);
 	}
 
 
