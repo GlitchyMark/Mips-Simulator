@@ -658,7 +658,7 @@ int MIPS::insertInstructions(std::vector<std::string> instructions)
 			instruction |= (getrVal(result[3], insttype, i)) & 0x001F;//Immediate
 		}
 		else if (insttype == "res") {
-			instruction |= 0x0F << 11;//Control
+			instruction |= 0x12 << 11;//Control
 			instruction |= (getrVal(result[2], insttype, i) << 8) & 0x0700;//rs
 			instruction |= (getrVal(result[1], insttype, i) << 5) & 0x00F0;//rt
 			instruction |= (getrVal(result[1], insttype, i) << 2) & 0x001C;//rd
@@ -670,6 +670,9 @@ int MIPS::insertInstructions(std::vector<std::string> instructions)
 		}
 		instructionmemory[i] = instruction;
 	}
+
+	datamemory[0] = 0xFF00;
+	datamemory[2] = 0x00FF;
 	int a0tmp = 0x0010;
 	datamemory[a0tmp] = 0x0101;
 	datamemory[a0tmp + 2] = 0x0110;

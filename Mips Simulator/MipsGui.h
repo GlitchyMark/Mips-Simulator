@@ -45,11 +45,15 @@ namespace MipsSimulator {
 	private: System::Windows::Forms::Label^ label1;
 	private: System::Windows::Forms::Button^ button1;
 	private: System::Windows::Forms::ListBox^ cycleBox;
-	private: System::Windows::Forms::ListBox^ registerBox;
+
 
 
 	private: System::Windows::Forms::Label^ label2;
 	private: System::Windows::Forms::Label^ label3;
+	private: System::Windows::Forms::TextBox^ registerBox;
+	private: System::Windows::Forms::TextBox^ memoryBox;
+
+	private: System::Windows::Forms::Label^ label4;
 
 	private:
 		/// <summary>
@@ -68,9 +72,11 @@ namespace MipsSimulator {
 			this->label1 = (gcnew System::Windows::Forms::Label());
 			this->button1 = (gcnew System::Windows::Forms::Button());
 			this->cycleBox = (gcnew System::Windows::Forms::ListBox());
-			this->registerBox = (gcnew System::Windows::Forms::ListBox());
 			this->label2 = (gcnew System::Windows::Forms::Label());
 			this->label3 = (gcnew System::Windows::Forms::Label());
+			this->registerBox = (gcnew System::Windows::Forms::TextBox());
+			this->memoryBox = (gcnew System::Windows::Forms::TextBox());
+			this->label4 = (gcnew System::Windows::Forms::Label());
 			this->SuspendLayout();
 			// 
 			// instructionBox
@@ -81,7 +87,7 @@ namespace MipsSimulator {
 			this->instructionBox->Multiline = true;
 			this->instructionBox->Name = L"instructionBox";
 			this->instructionBox->ScrollBars = System::Windows::Forms::ScrollBars::Vertical;
-			this->instructionBox->Size = System::Drawing::Size(415, 560);
+			this->instructionBox->Size = System::Drawing::Size(415, 578);
 			this->instructionBox->TabIndex = 0;
 			this->instructionBox->Text = L"addi $s1, $s1, 5";
 			this->instructionBox->TextChanged += gcnew System::EventHandler(this, &MipsGui::textBox1_TextChanged);
@@ -100,7 +106,7 @@ namespace MipsSimulator {
 			// button1
 			// 
 			this->button1->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Left));
-			this->button1->Location = System::Drawing::Point(12, 598);
+			this->button1->Location = System::Drawing::Point(12, 616);
 			this->button1->Name = L"button1";
 			this->button1->Size = System::Drawing::Size(415, 54);
 			this->button1->TabIndex = 2;
@@ -119,19 +125,6 @@ namespace MipsSimulator {
 			this->cycleBox->Size = System::Drawing::Size(119, 624);
 			this->cycleBox->TabIndex = 3;
 			this->cycleBox->SelectedIndexChanged += gcnew System::EventHandler(this, &MipsGui::cycleBox_SelectedIndexChanged);
-			// 
-			// registerBox
-			// 
-			this->registerBox->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom)
-				| System::Windows::Forms::AnchorStyles::Left)
-				| System::Windows::Forms::AnchorStyles::Right));
-			this->registerBox->FormattingEnabled = true;
-			this->registerBox->ItemHeight = 20;
-			this->registerBox->Location = System::Drawing::Point(558, 32);
-			this->registerBox->Name = L"registerBox";
-			this->registerBox->Size = System::Drawing::Size(292, 624);
-			this->registerBox->TabIndex = 4;
-			this->registerBox->SelectedIndexChanged += gcnew System::EventHandler(this, &MipsGui::listBox2_SelectedIndexChanged);
 			// 
 			// label2
 			// 
@@ -153,14 +146,48 @@ namespace MipsSimulator {
 			this->label3->TabIndex = 6;
 			this->label3->Text = L"Register Values";
 			// 
+			// registerBox
+			// 
+			this->registerBox->Anchor = static_cast<System::Windows::Forms::AnchorStyles>(((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom)
+				| System::Windows::Forms::AnchorStyles::Left));
+			this->registerBox->Location = System::Drawing::Point(558, 32);
+			this->registerBox->Multiline = true;
+			this->registerBox->Name = L"registerBox";
+			this->registerBox->Size = System::Drawing::Size(292, 624);
+			this->registerBox->TabIndex = 7;
+			// 
+			// memoryBox
+			// 
+			this->memoryBox->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom)
+				| System::Windows::Forms::AnchorStyles::Left)
+				| System::Windows::Forms::AnchorStyles::Right));
+			this->memoryBox->Location = System::Drawing::Point(859, 32);
+			this->memoryBox->Multiline = true;
+			this->memoryBox->Name = L"memoryBox";
+			this->memoryBox->Size = System::Drawing::Size(292, 624);
+			this->memoryBox->TabIndex = 9;
+			// 
+			// label4
+			// 
+			this->label4->Anchor = static_cast<System::Windows::Forms::AnchorStyles>(((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Left)
+				| System::Windows::Forms::AnchorStyles::Right));
+			this->label4->AutoSize = true;
+			this->label4->Location = System::Drawing::Point(859, 9);
+			this->label4->Name = L"label4";
+			this->label4->Size = System::Drawing::Size(118, 20);
+			this->label4->TabIndex = 8;
+			this->label4->Text = L"Memory Values";
+			// 
 			// MipsGui
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(9, 20);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(862, 664);
+			this->ClientSize = System::Drawing::Size(1164, 682);
+			this->Controls->Add(this->memoryBox);
+			this->Controls->Add(this->label4);
+			this->Controls->Add(this->registerBox);
 			this->Controls->Add(this->label3);
 			this->Controls->Add(this->label2);
-			this->Controls->Add(this->registerBox);
 			this->Controls->Add(this->cycleBox);
 			this->Controls->Add(this->button1);
 			this->Controls->Add(this->label1);
@@ -232,15 +259,23 @@ private: System::Void textBox1_TextChanged(System::Object^ sender, System::Event
 	private: System::Void cycleBox_SelectedIndexChanged(System::Object^ sender, System::EventArgs^ e) {
 		if (cycleBox->SelectedIndex > mips_run->getRegisterHistory().size() || mips_run->getRegisterHistory().size() < 0)
 		return;
-	registerBox->Items->Clear();
-	for (int i = 0; 8 > i; i++)
-	{
-		int32_t regVal = mips_run->getRegisterHistory().at(cycleBox->SelectedIndex)[i];
-		if (i == 7)
-			registerBox->Items->Add("$pc: " + regVal);
-		else
-			registerBox->Items->Add("$s" + i + ": " + regVal);
-	}
+		registerBox->Text = "";
+		for (int i = 0; 8 > i; i++)
+		{
+			int32_t regVal = mips_run->getRegisterHistory().at(cycleBox->SelectedIndex)[i];
+			if (i == 7)
+				registerBox->Text += ("$pc: " + regVal + " | line: " + ((regVal /2) ));
+			else
+				registerBox->Text += ("$s" + i + ": " + regVal + "\r\n");
+
+		}
+
+		memoryBox->Text = "";
+		for (int i = 0; 32 > i; i++)
+		{
+			int32_t memVal = mips_run->getMemoryHistory().at(cycleBox->SelectedIndex)[i];
+			memoryBox->Text += ("mem " + i + ": " + memVal + "\r\n");
+		}
 }
 };
 }
