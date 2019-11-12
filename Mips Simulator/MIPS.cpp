@@ -153,7 +153,8 @@ void MIPS::Control(SubWire instruction)//Supports 16 opcodes
 		control.MemtoReg = 0;
 		control.ALUOp = ADD;
 		control.MemWrite = 1;
-		control.ALUSrc = 1; 
+		control.ALUSrc = 1;
+		control.RegWrite = 0;
 		break;
 	case 0x06://sll
 		control.RegDst = 1;
@@ -210,8 +211,16 @@ void MIPS::Control(SubWire instruction)//Supports 16 opcodes
 		control.ALUSrc = 1;
 		control.RegWrite = 1;//yes
 		break;
-		break;
-	case 0x0B:
+	case 0x0B://slri
+		control.RegDst = 0;
+		control.Jump = 0;//no
+		control.Branch = 0;
+		control.MemRead = 0;
+		control.MemtoReg = 0;
+		control.ALUOp = SHIFTRIGHT;
+		control.MemWrite = 0;
+		control.ALUSrc = 1;
+		control.RegWrite = 1;//yes
 		break;
 	case 0x0C://slt
 		control.RegDst = 0;
@@ -224,7 +233,7 @@ void MIPS::Control(SubWire instruction)//Supports 16 opcodes
 		control.ALUSrc = 0;
 		control.RegWrite = 1;//yes
 		break;
-	case 0x0D://Branch
+	case 0x0D://Jump
 		control.RegDst = 0;
 		control.Jump = 1;
 		control.Branch = 0;
@@ -340,7 +349,7 @@ void MIPS::ALU(int busA, int busB, uint8_t operation, int data, int alt)//ALUOut
 		break;
 	case COMPARE256://
 		setWire(data, getWire(busA) > 0x0100);
-		setWire(alt, (getWire(busA) > 0x01000) & 0x1);
+		setWire(alt, (getWire(busA) > 0x0100) & 0x1);
 		break;
 	case BITWISEXOR://Bitwise XOR
 		setWire(data, getWire(busA) ^ getWire(busB));
@@ -619,6 +628,12 @@ int MIPS::insertInstructions(std::vector<std::string> instructions)
 		}
 		else if (insttype == "slli") {
 			instruction |= 0x0A << 11;//Control
+			instruction |= (getrVal(result[2], insttype, i) << 8) & 0x0700;//rs
+			instruction |= (getrVal(result[1], insttype, i) << 5) & 0x00E0;//rt
+			instruction |= (getrVal(result[3], insttype, i)) & 0x001F;//Immediate
+		}
+		else if (insttype == "slri") {
+			instruction |= 0x0B << 11;//Control
 			instruction |= (getrVal(result[2], insttype, i) << 8) & 0x0700;//rs
 			instruction |= (getrVal(result[1], insttype, i) << 5) & 0x00E0;//rt
 			instruction |= (getrVal(result[3], insttype, i)) & 0x001F;//Immediate
