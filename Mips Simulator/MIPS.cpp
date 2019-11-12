@@ -200,7 +200,7 @@ void MIPS::Control(SubWire instruction)//Supports 16 opcodes
 		control.RegWrite = 1;//yes
 		break;
 	case 0x0A://slli
-		control.RegDst = 1;
+		control.RegDst = 0;
 		control.Jump = 0;//no
 		control.Branch = 0;
 		control.MemRead = 0;
@@ -601,8 +601,8 @@ int MIPS::insertInstructions(std::vector<std::string> instructions)
 		}
 		else if (insttype == "sh") {
 			instruction |= 0x05 << 11;//Control
-			instruction |= (getrVal(result[2], insttype, i) << 8) & 0x0700;//rs
-			instruction |= (getrVal(result[1], insttype, i) << 5) & 0x00E0;//rt
+			instruction |= (getrVal(result[1], insttype, i) << 8) & 0x0700;//rs
+			instruction |= (getrVal(result[2], insttype, i) << 5) & 0x00E0;//rt
 			instruction |= (getrVal(result[3], insttype, i)) & 0x001F;//Immediate
 		}
 		else if (insttype == "sll") {
@@ -671,6 +671,10 @@ int MIPS::insertInstructions(std::vector<std::string> instructions)
 		instructionmemory[i] = instruction;
 	}
 
+
+	for (int i = 0; DATA_MEMORY_SIZE > i; i++)
+		datamemory[i] = 0;
+
 	datamemory[0] = 0xFF00;
 	datamemory[2] = 0x00FF;
 	int a0tmp = 0x0010;
@@ -685,7 +689,8 @@ int MIPS::insertInstructions(std::vector<std::string> instructions)
 	registers[3] = 0x0040;
 	registers[4] = 0x1010;
 	registers[5] = 0x000F;
-	registers[6] = 0x00F;
+	registers[6] = 0x00F0;
+
 
 	return 0;
 }
